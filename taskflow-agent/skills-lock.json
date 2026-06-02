@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "anthropic-style-frontend-cn": {
+      "source": "TartSlayer/anthropic-style-cn",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "72d2e02e39181a0204500652d2e311e488ce734a9caa13109eb08ce4a204ea01"
+    }
+  }
+}
