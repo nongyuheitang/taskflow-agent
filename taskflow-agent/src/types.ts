@@ -66,3 +66,17 @@ export interface InterviewCard {
   points: string[];
   code?: string;
 }
+
+/** AI 提供商类型 */
+export type AIProvider = 'gemini' | 'zhipu' | 'anthropic' | 'custom';
+
+/** AI 配置（持久化到 localStorage） */
+export interface AIConfig {
+  provider: AIProvider;
+  apiKey: string;
+  model: string;
+  customEndpoint: string;
+}
+
+/** AI 拆解模式 */
+export type DecomposeMode = 'rule' | 'ai';

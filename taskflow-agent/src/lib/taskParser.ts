@@ -1,9 +1,10 @@
 // ============================================================
-// AI 任务拆解引擎（规则驱动，零依赖）
+// AI 任务拆解引擎（规则驱动 + AI 增强）
 // 设计思路见 README § AI Breakdown 设计说明
 // ============================================================
 
-import { DecomposeResult, InterviewCard } from '../types';
+import { DecomposeResult, InterviewCard, AIConfig } from '../types';
+import { decomposeWithAI } from './aiService';
 
 // ---- 领域模板 ----
 
@@ -135,6 +136,21 @@ export function decomposeTask(input: string): DecomposeResult {
     subtasks: FALLBACK,
     reasoning: '使用通用任务拆解模板',
   };
+}
+
+// ============================================================
+// AI 驱动的任务拆解（需要 API Key）
+// ============================================================
+
+/**
+ * 使用 AI 模型拆解任务。需要先配置 API Key。
+ * 如果 AI 调用失败，会抛出错误，调用方应 catch 并回退到规则引擎。
+ */
+export async function decomposeTaskWithAI(
+  config: AIConfig,
+  input: string,
+): Promise<DecomposeResult> {
+  return decomposeWithAI(config, input);
 }
 
 // ============================================================

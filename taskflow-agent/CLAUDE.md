@@ -2,7 +2,7 @@
 
 ## 项目概述
 
-TaskFlow Agent 是一个融合 AI 辅助拆解能力的任务管理工作台，面向 FDE 实习生面试展示。纯前端实现，Vite + React + TypeScript + Zustand + localStorage。
+TaskFlow Agent 是一个融合 AI 辅助拆解能力的任务管理工作台。纯前端实现，Vite + React + TypeScript + Zustand + localStorage。
 
 ## 技术决策
 

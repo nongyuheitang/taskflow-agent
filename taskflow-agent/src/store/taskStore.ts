@@ -10,6 +10,9 @@ import {
   ViewMode,
   FilterOptions,
   Subtask,
+  AIConfig,
+  AIProvider,
+  DecomposeMode,
 } from '../types';
 import { saveTasks, loadTasks, saveSettings, loadSettings } from '../lib/storage';
 import { demoTasks } from '../data/demoTasks';
@@ -73,6 +76,32 @@ interface Settings {
 }
 const saved: Settings = loadSettings() as unknown as Settings;
 
+// ---- AI 配置持久化 ----
+
+const AI_CONFIG_KEY = 'taskflow-ai-config';
+
+function loadAIConfig(): AIConfig {
+  try {
+    const raw = localStorage.getItem(AI_CONFIG_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        provider: (parsed.provider as AIProvider) || 'gemini',
+        apiKey: parsed.apiKey || '',
+        model: parsed.model || '',
+        customEndpoint: parsed.customEndpoint || '',
+      };
+    }
+  } catch { /* ignore */ }
+  return { provider: 'zhipu', apiKey: '', model: '', customEndpoint: '' };
+}
+
+function saveAIConfig(config: AIConfig): void {
+  try {
+    localStorage.setItem(AI_CONFIG_KEY, JSON.stringify(config));
+  } catch { /* ignore */ }
+}
+
 // ---- Store ----
 
 export interface TaskState {
@@ -85,6 +114,8 @@ export interface TaskState {
   notification: string | null;
   aiPanelOpen: boolean;
   aboutPanelOpen: boolean;
+  aiConfig: AIConfig;
+  decomposeMode: DecomposeMode;
 
   addTask: (data: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateTask: (id: string, data: Partial<Task>) => void;
@@ -106,6 +137,9 @@ export interface TaskState {
   setAiPanelOpen: (v: boolean) => void;
   setAboutPanelOpen: (v: boolean) => void;
 
+  setAIConfig: (config: Partial<AIConfig>) => void;
+  setDecomposeMode: (mode: DecomposeMode) => void;
+
   importTasks: (tasks: Task[]) => void;
   loadDemoData: () => void;
   clearAll: () => void;
@@ -123,6 +157,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   notification: null,
   aiPanelOpen: false,
   aboutPanelOpen: false,
+  aiConfig: loadAIConfig(),
+  decomposeMode: 'rule',
 
   // ===== CRUD =====
 
@@ -237,6 +273,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
   setAiPanelOpen: (v) => set({ aiPanelOpen: v }),
   setAboutPanelOpen: (v) => set({ aboutPanelOpen: v }),
+  setAIConfig: (partial) =>
+    set((s) => {
+      const aiConfig = { ...s.aiConfig, ...partial };
+      saveAIConfig(aiConfig);
+      return { aiConfig };
+    }),
+  setDecomposeMode: (mode) => set({ decomposeMode: mode }),
 
   // ===== 批量 =====
 

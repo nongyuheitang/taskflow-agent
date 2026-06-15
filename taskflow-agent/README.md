@@ -133,3 +133,5 @@ npm install
 npm run dev      # 开发
 npm run build    # 构建
 ```
+cd taskflow-agent
+npm run dev
